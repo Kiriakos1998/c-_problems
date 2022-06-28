@@ -1,0 +1,84 @@
+#include <bits/stdc++.h>
+using namespace std;
+int aInt = 'a';
+int health[100000];
+struct trie {
+  struct trie* next[26];
+  vector<int> term;
+  trie() {
+    for (int i = 0; i < 26 ; i++) {
+      next[i] = NULL;
+    }
+    }
+};
+ 
+ trie *root;
+
+void insert (char stringArray[],int index){
+     trie *currentNode=root;
+    for(int i=0; i<strlen(stringArray);i++){
+        int idx = stringArray[i] -aInt;
+        if (currentNode->next[idx] == NULL) {
+          currentNode->next[idx] = new trie();
+        }
+        currentNode = currentNode->next[idx];
+    }
+    currentNode->term.push_back(index);
+}
+long calculateTotalHealth (char stringArray[],int beg, int end){
+    struct trie *currentNode;
+    long totalHealth=0;
+    int increaseString;
+    long stringLength=strlen(stringArray);
+    for(int i=0;i<stringLength;i++){
+        increaseString=i;
+        currentNode = root->next[stringArray[i] - aInt];
+        while (currentNode != NULL && stringLength > increaseString) {
+          if (!(currentNode->term.empty())) {
+            for (auto k : currentNode->term) {
+              if(k>=beg && k<=end){
+                  totalHealth+=health[k];
+              }
+            }
+          }
+          currentNode =
+              currentNode->next[stringArray[increaseString + 1] - aInt];
+          increaseString++;
+      }
+    }
+    return totalHealth;
+}
+int main()
+{
+    root= new trie();
+char allStringsTogether[2000001];
+int n,s;
+scanf("%d",&n);
+
+for(int i=0; i<n ; i++){
+    scanf("%s",allStringsTogether);
+    insert(allStringsTogether,i);
+ }
+
+for ( int i=0; i<n ; i++){
+scanf("%d",&health[i]);
+}
+scanf("%d",&s);
+int genesStart,genesEnd;
+long long totalHealth=0;
+long long min=20000000000000;
+long long max=-1;
+for(int i=0; i<s;i++){
+    scanf("%d%d%s",&genesStart,&genesEnd,allStringsTogether);
+totalHealth=calculateTotalHealth(allStringsTogether,genesStart,genesEnd);
+ if(totalHealth>max){
+     max=totalHealth;
+ }
+ if(totalHealth<min){
+     min=totalHealth;
+ }
+ totalHealth=0;
+}
+cout<<min<<" "<<max;
+    return 0;
+}
