@@ -1,0 +1,98 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+/*
+ * Complete the 'insertionSort' function below.
+ *
+ * The function is expected to return an INTEGER.
+ * The function accepts INTEGER_ARRAY arr as parameter.
+ */
+
+struct Node {
+    int num;
+    int rights;
+    int doubl;
+    Node *next[2];
+    Node(int num){
+        this->num=num;
+        rights=0;
+        doubl=0;
+        next[0]=NULL;
+        next[1]=NULL;
+    }
+};
+
+long  insertionSort(int arr[],int n) {
+     int i;
+      for(i=0;i<n-1;i++){
+          if (arr[i]>arr[i+1]) {
+              i--;
+          break;
+          }
+      }
+      if(i==n-1){
+          return 0;
+      }
+for(i=n-1;i>0;i--){
+          if (arr[i]>arr[i-1]) {
+              i--;
+          break;
+          }
+      }
+      if(i==0){
+          return 1L*n*(n-1)/2;
+      }
+long moves=0;
+Node *root= new Node(arr[0]);
+Node *currentNode=root;
+Node *nodeToUpdate=root;
+int lr=0;
+int lrSupp=0;
+for (int i=1;i<n;i++)
+{
+    currentNode=root;
+    while (currentNode!=NULL) {
+     lr= arr[i]>currentNode->num;
+     lrSupp=arr[i]<currentNode->num;
+         
+       if(lrSupp){
+           moves+=(currentNode->rights+1+currentNode->doubl);
+            nodeToUpdate=currentNode;
+    currentNode=currentNode->next[lr]; 
+    continue;
+       }
+    else if (lr){
+       currentNode->rights++; 
+        nodeToUpdate=currentNode;
+    currentNode=currentNode->next[lr]; 
+    continue;
+    }
+           if (lr==lrSupp) {
+           moves+=(currentNode->rights);
+       currentNode->doubl++;
+       break;
+       }
+    }
+    if (lr==lrSupp) {
+    continue;
+    }
+   nodeToUpdate->next[lr]=new Node(arr[i]);
+}
+return moves;
+}
+
+
+int main()
+{
+ int runs,n ;
+ int a[100001];
+ scanf("%d",&runs) ;
+ while(runs--)
+ {
+  scanf("%d",&n) ;
+  for(int i = 0;i < n;i++) scanf("%d",&a[i]) ;
+  long long ret=insertionSort(a,n);
+  cout << ret << endl ;
+ }
+ return 0 ;
+}
